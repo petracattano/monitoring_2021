@@ -173,4 +173,48 @@ plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
 plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin")
 plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="hist")
 
+# DAY 5
+ install.packages("RStoolbox") #installo nuovo pacchetto
+
+# importo il dato
+library(raster) #richiamo il pacchetto, non metto virgolette perchè è già su r
+setwd("C:/lab/") #indico la cartella
+
+#multitemporal set
+p224r63_2011 <- brick("p224r63_2011_masked.grd") # Funzione brick per importare i dati
+p224r63_1988 <- brick("p224r63_1988_masked.grd")
+p224r63_1988  #per avere le info
+
+# Plot, visualizzo tutte le bande
+plot(p224r63_1988)
+
+# Plot RGB 
+plotRGB(p224r63_1988, r=3, g=2, b=1, stretch="Lin")
+
+#Voglio vedere anche l'infrarosso vicino
+plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin")
+
+#Voglio plottare le due immagini in RGB per fare confronti, multiframe con par
+par(mfrow=c(2,1))
+plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin")
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
+
+#Voglio un multiframe 2x2 visualizzando sia lo tretch lineare che histogram.
+par(mfrow=c(2,2))
+plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin")
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
+plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="hist")
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="hist")
+
+# salvo in pdf
+pdf("multitemp.pdf")
+par(mfrow=c(2,2))
+plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin")
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
+plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="hist")
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="hist")
+dev.off()
+
+
+
 
