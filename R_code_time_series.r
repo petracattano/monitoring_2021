@@ -49,4 +49,15 @@ plotRGB(TGr, 1, 2, 3, stretch="Lin")
 
 library(rasterVis)
 
+#09/04/2021 eri assente
 
+#installo il pacchetto raster Vis e lo richiamo insieme al pacchetto raster
+install.packages("rasterVis")
+library(raster)
+library(rasterVis) 
+
+#working directory
+setwd("C:/lab/greenland")
+
+
+#14/04/2021
