@@ -2,8 +2,10 @@
 # Greenland increase of temperature
 # Data and code from Emnuela Cosma
 
-#richiama il pacchetto raster
+#installo il pacchetto raster Vis e lo richiamo insieme al pacchetto raster
+install.packages("rasterVis")
 library(raster)
+library(rasterVis)
 
 # Cambio la working directory
 setwd("C:/lab/greenland")
@@ -42,22 +44,38 @@ import
 
 #funzione stack 
 TGr <- stack(import)
+
+#per avere le info sul file
+TGr
+
+#plotto una immagine e non ho bisogno di fare il plot di 4 immagini
 plot(TGr)
 
-
+#faccio un plot RGB in cui sovrappongo tre immagini, lst 2000, 2005 e 2010. C'è più blu, ho valori più alti nell'lst 2010
 plotRGB(TGr, 1, 2, 3, stretch="Lin")
 
-library(rasterVis)
+#posso montare le immagini in modi differenti. Es. il 2005 nel red, il 1010 nel green, il 2015 nel blu
+plotRGB(TGr, 2, 3, 4, stretch="Lin")
+plotRGB(TGr, 4, 3, 2, stretch="Lin")
 
 #09/04/2021 eri assente
 
-#installo il pacchetto raster Vis e lo richiamo insieme al pacchetto raster
-install.packages("rasterVis")
-library(raster)
-library(rasterVis) 
+#funzione level plot, ho 4 grafici
+levelplot(TGr)
 
-#working directory
-setwd("C:/lab/greenland")
+#posso applicarla ad un singolo file attraverso il comando con $
+levelplot(TGr$lst_2000)
+levelplot(TGr$lst_2005)
+
+# cambiamo i colori del plot. L'argomento stavolta non è solo col ma col.regions
+cl <- colorRampPalette(c("blue","light blue","pink","red"))(100)
+levelplot(TGr, col.regions=cl)
+
+# posso rinominare i titoli del singoli attributi 
+levelplot(TGr,col.regions=cl, names.attr=c("July 2000","July 2005", "July 2010", "July 2015"))
+
+# inserisco il titolo totale con l'argomento main. metto le virgolette perchè è un testo 
+levelplot(TGr,col.regions=cl, main="LST variation in time",
+names.attr=c("July 2000","July 2005", "July 2010", "July 2015"))
 
 
-#14/04/2021
