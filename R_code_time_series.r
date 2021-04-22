@@ -74,8 +74,45 @@ levelplot(TGr, col.regions=cl)
 # posso rinominare i titoli del singoli attributi 
 levelplot(TGr,col.regions=cl, names.attr=c("July 2000","July 2005", "July 2010", "July 2015"))
 
-# inserisco il titolo totale con l'argomento main. metto le virgolette perchè è un testo 
+# inserisco il titolo principale con l'argomento main. metto le virgolette perchè è un testo 
 levelplot(TGr,col.regions=cl, main="LST variation in time",
 names.attr=c("July 2000","July 2005", "July 2010", "July 2015"))
+
+#se voglio creare un pdf del grafico finale
+pdf("LST variation in time.pdf")
+cl <- colorRampPalette(c("blue","light blue","pink","red"))(100)
+levelplot(TGr,col.regions=cl, main="LST variation in time",
+names.attr=c("July 2000","July 2005", "July 2010", "July 2015"))
+dev.off()
+
+# scarichiamo i dati melt sulo scioglimento dal 79 al 2007
+#abbiamo tantissimi dati, per importarli creiamo una lista e sfruttimao la funzione lapply per applicare a tutti i dati la funzione raster
+#funzioni per applicare funzioni a più file
+#devo creare una lista di file --> tramite la funzione list.files. Uso melt come parola comune ai files
+meltlist <- list.files(pattern="melt")
+
+#funzione lapply per applicare funzione raster su tutta la lista
+melt_import <- lapply(meltlist,raster)
+import
+
+#faccio lo stack per raggrupare tutti i files importati, lo chiamo melt
+melt <- stack(melt_import)
+melt
+
+#facciamo lo stesso levelplot ma con i dati melt
+levelplot(melt)
+
+#possiamo fare algebra applicata a matrici es. per vedere la differenza tra due dati e capire il grado di scioglmento
+#vogliamo fare la sottrazione tra il primo dato e l'ultimo. Dbbiamo associare un nome alla sottrazione (melt_amount)
+melt_amount <- melt$X2007annual_melt - melt$X1979annual_melt
+
+#cambio il colore e faccio un plot
+clb <- colorRampPalette(c("blue","white","red"))(100)
+plot(melt_amount, col=clb)
+
+#faccio un level plot per avere un grafico ancora più comprensibile
+levelplot(melt_amount, col.regions=clb)
+
+
 
 
