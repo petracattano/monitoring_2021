@@ -1,0 +1,28 @@
+#23/04/2021 Analisi multivariata
+
+#pacchetti necessari
+library (raster)
+library(RStoolbox)
+
+#set della working dyrectory 
+
+# carico l'immagine p224r63_2011.grd
+
+
+# ho 7 bande disponibili, uso la funzione brick perchè ho un set multiplo di dati (la funzione raster carica 1 set per volta)
+p224r63_2011 <- brick("p224r63_2011.grd")
+
+#plot della immagine
+plot(p224r63_2011)
+
+# voglio le info sull'immagine
+p224r63_2011
+
+#faccio un plot della banda 1 contro la banda 2, la correlazione tra due bande
+plot(p224r63_2011$B1_sre,p224r63_2011$B2_sre, col="red", pch=19, cex=2)
+
+#posso cambiare il posizionamento delle due bande
+plot(p224r63_2011$B2_sre,p224r63_2011$B1_sre, col="red", pch=19, cex=2)
+
+# invece di fare manualmente la correlazione tra bande, posso usare la funzione pairs che mi permette di fare la correlazione a due a due di tutte le bande 
+pairs(p224r63_2011)
