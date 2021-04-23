@@ -1,10 +1,30 @@
-# Gran Canyon data 
+# Gran Canyon data 23/04/2021
 
 #librerie necessarie 
 library(raster)
 library(RStoolbox)
 
 #working directory, dove pesco i dati
-setwd("~/lab")
+setwd("C:/lab")
+
+#applico la funzione brick
+gc <- brick("dolansprings_oli_2013088_canyon_lrg.jpg")
+
+# ho un raster con più strati, posso fare un plot RGB
+plotRGB(gc, r=1, g=2, b=3, stretch="lin")
+
+#posso anche cambiare lo streth la lin a hist 
+plotRGB(gc, r=1, g=2, b=3, stretch="hist")
+
+# per creare una classificazione uso la funzione nsuperClass
+gcc2 <- unsuperClass(gc, nClasses=2)
+
+#posso plottare, devo riferirmi al modello di classificazione 
+plot(gcc2$map)
+
+#aumento il numero di classi
+gcc4 <- unsuperClass(gc, nClasses=4)
+plot(gcc4$map)
+
 
 
