@@ -1,1 +1,10 @@
+# Gran Canyon data 
+
+#librerie necessarie 
+library(raster)
+library(RStoolbox)
+
+#working directory, dove pesco i dati
+setwd("~/lab")
+
 
