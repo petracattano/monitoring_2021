@@ -88,3 +88,7 @@ plot(ndvi2, col=cl,  main="NDVI at time 2")
 vi <-spectralIndices(defor1, green=3,red=2,nir=1)
 plot(vi, col=cl)
 
+#fai lo stesso per la seconda immagine
+vi2<-spectralIndices(defor2, green=3,red=2,nir=1)
+plot(vi2, col=cl)
+
