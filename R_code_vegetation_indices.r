@@ -4,6 +4,11 @@
 #richiamo le librarie necessarie
 library(raster)
 library(RStoolbox)
+library(rasterVis)
+
+#installo il pacchetto rastervid per usufrire del dataset sugli indici di vegetazione
+install.packages("rasterdiv")
+library(rasterdiv)
 
 #working directory, dove pesco i dati
 setwd("C:/lab")
@@ -91,4 +96,19 @@ plot(vi, col=cl)
 #fai lo stesso per la seconda immagine
 vi2<-spectralIndices(defor2, green=3,red=2,nir=1)
 plot(vi2, col=cl)
+
+#05/05/2021
+
+# worldwide NDVI
+plot(copNDVI)
+
+#mappa NDVI a scala globale
+copNDVI <- reclassify(copNDVI, cbind(253:255, NA))
+plot(copNDVI)
+
+#funzione level plot
+copNDVI <- reclassify(copNDVI, cbind(253:255, NA))
+levelplot(copNDVI)
+
+
 
