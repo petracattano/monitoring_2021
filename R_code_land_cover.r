@@ -19,17 +19,22 @@ library(gridExtra)
 
 defor1 <- brick("defor1.jpg")
 plotRGB(defor1, r=1, g=2, b=3, stretch="lin")
+
+#tramite la funzione ggRGB del pacchetto ggplo2 creo plot con più informazioni
+#nel plot visualizzo x, y --> le coordinate spaziali dell'oggetto
 ggRGB(defor1, r=1, g=2, b=3, stretch="lin")
 
+#carico la seconda immagine e faccio gli stessi passaggi
 defor2 <- brick("defor2.jpg")
 plotRGB(defor2, r=1, g=2, b=3, stretch="lin")
 ggRGB(defor2, r=1, g=2, b=3, stretch="lin")
 
-#confronto i due plot
+#confronto i due plot tramite la funzione par
 par(mfrow=c(1,2))
 plotRGB(defor1, r=1, g=2, b=3, stretch="lin")
 plotRGB(defor2, r=1, g=2, b=3, stretch="lin")
 
+#posso farlo anche tramite ggplot, funzione grid.arrange
 # multiframe with ggplot2 and gridExtra
 p1 <- ggRGB(defor1, r=1, g=2, b=3, stretch="lin")
 p2 <- ggRGB(defor2, r=1, g=2, b=3, stretch="lin")
