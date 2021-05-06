@@ -99,15 +99,18 @@ plot(vi2, col=cl)
 
 #05/05/2021
 
-# worldwide NDVI
-plot(copNDVI)
-
+# worldwide NDVI, visualizziamo il database copNDVI del pacchetto rasterdiv
 #mappa NDVI a scala globale
+plot(copNDVI)
+
+#non voglio visualizzare l'acqua 
+#posso eliminare i valori del database corrispondenti tramite la funzione reclassify, argomento cbind
+#i pixels con valori da 253 a 255 verranno classificati come NA, non valori
 copNDVI <- reclassify(copNDVI, cbind(253:255, NA))
 plot(copNDVI)
 
-#funzione level plot
-copNDVI <- reclassify(copNDVI, cbind(253:255, NA))
+#funzione level plot per visualizzare la varianza in termini di biomassa
+#abbiamo una visione dell'estensione della biomassa, ricorda la distribuzione dei biomi 
 levelplot(copNDVI)
 
 
