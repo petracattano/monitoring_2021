@@ -80,7 +80,7 @@ summary(sentpca$model) #la prima componente PC spiega il 67,3%
 pc1<-sentpca$map$PC1
 
 #funzione focal
-pc1sd3 <-focal(pc1, w=matrix(1/25, nrow=5, ncol=5), fun=sd)
+pc1sd5 <-focal(pc1, w=matrix(1/25, nrow=5, ncol=5), fun=sd)
 cl <- colorRampPalette(c('blue','green','pink','magenta','orange','brown','red','yellow'))(100)
 plot(pc1sd3, col=cl)
 
@@ -94,7 +94,16 @@ source("source_ggplot.r")
 
 #non funziona e riprendiamo il codice sopra
 #funzione ggplot per aprire una nuova finestra vuota
-ggplot()
+#gg plot lavora er blocchi, utilizzo il sinbolo + per aggiungerli dopo essere andata a capo
+ggplot() +
+
+#aggiungo l bloco per la geometria, si tratta di un raster e la geometria è il pixel
+#assicurati del nome della tua pca da plottare --> pc1sd5
+#aggiungo anche le aestetics, ovvero le indicazioni su cosa plottare (x, y e i valori all'interno (il layer)) tramite l'argomento mapping
+geom_raster(pc1sd5, mapping = aes(x=x, y=y, fill=layer)) +
+
+#funzione pacchetto viridis per usare una delle legende di default
+scale_fill_viridis()
 
 
 
