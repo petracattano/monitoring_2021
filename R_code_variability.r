@@ -1,7 +1,10 @@
 #carico le librerie necessarie
 library(raster)
 library(RStoolbox)
-library(ggplot2)
+library(ggplot2)#per plottare ggplot
+library(GridExtra)#per plottare insieme più ggplot
+install.packages("viridis")
+library(viridis)#per colorare i plot di ggplot automaticamente
 
 #set della working directory
 setwd("C:/lab")
@@ -64,11 +67,29 @@ plot(ndvisd5, col=cl)
 
 #invece dell'NDVI, accorpo il set di dati tramite la PCA, con la formazione della PC1
 #PCA
-sentinel_pca <- rasterPCA(sent)
-plot(sentinel_pca$map)
+sentpca <- rasterPCA(sent)
+plot(sentpca$map)
 
 #summary per vedere quanta variabilità spiegano le singole componenti
-summary(sentinel_pca$model) #la prima componente PC spiega il 67,3%
+summary(sentpca$model) #la prima componente PC spiega il 67,3%
 
+
+ #21/05/2021
+#sapendo che la prima componente PC1 spiega il 67,3%, per utilizzarla utilizzo il $ e utilozzarla per aplicare la funzione focal
+#associo sempre la stringa ad un oggetto così da evitare di riscrivere le funzioni
+pc1<-sentpca$map$PC1
+
+#funzione focal
+pc1sd3 <-focal(pc1, w=matrix(1/25, nrow=5, ncol=5), fun=sd)
+cl <- colorRampPalette(c('blue','green','pink','magenta','orange','brown','red','yellow'))(100)
+plot(pc1sd3, col=cl)
+
+#funzione source per importare codici
+#calcolo della sd 7x7 tirando dentro il codice
+#lo script salvato deve avere gli stessi oggetti del codice in uso, altrimenti non funziona
+source("source_test_lezione.r")
+
+#richiamo le librerie necessarie per applicare nuovamente source ma con funzione ggplot
+source("source_ggplot.r")#non funziona
 
 
