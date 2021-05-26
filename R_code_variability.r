@@ -2,7 +2,7 @@
 library(raster)
 library(RStoolbox)
 library(ggplot2)#per plottare ggplot
-library(GridExtra)#per plottare insieme più ggplot
+library(gridExtra)#per plottare insieme più ggplot
 install.packages("viridis")
 library(viridis)#per colorare i plot di ggplot automaticamente
 
@@ -90,23 +90,38 @@ plot(pc1sd3, col=cl)
 source("source_test_lezione.r")
 
 #richiamo le librerie necessarie per applicare nuovamente source ma con funzione ggplot
-source("source_ggplot.r")
+source("source_ggplot.r") #non funziona
 
 #non funziona e riprendiamo il codice sopra
 #funzione ggplot per aprire una nuova finestra vuota
 #gg plot lavora er blocchi, utilizzo il sinbolo + per aggiungerli dopo essere andata a capo
-ggplot() +
+p1<-ggplot() +
 
 #aggiungo l bloco per la geometria, si tratta di un raster e la geometria è il pixel
 #assicurati del nome della tua pca da plottare --> pc1sd5
 #aggiungo anche le aestetics, ovvero le indicazioni su cosa plottare (x, y e i valori all'interno (il layer)) tramite l'argomento mapping
 geom_raster(pc1sd5, mapping = aes(x=x, y=y, fill=layer)) +
 
-#funzione pacchetto viridis per usare una delle legende di default
-scale_fill_viridis()
+#funzione pacchetto viridis per usare una delle legende di default, non ho bisogno di dichiarare la color
+scale_fill_viridis() +
 
+#posso aggiungere un titolo
+ggtitle("standard deviation of PC1 by viridis color scale")
 
+#posso usare diverse legende, uso quella "magma"
+p2<-ggplot() +
+geom_raster(pc1sd5, mapping = aes(x=x, y=y, fill=layer)) +
+scale_fill_viridis(option="magma") + #argomento option per indicare la diversa legenda
+ggtitle("standard deviation of PC1 by magma color scale")
 
+#legenda inferno
+p3<-ggplot() +
+geom_raster(pc1sd5, mapping = aes(x=x, y=y, fill=layer)) +
+scale_fill_viridis(option="inferno") + #argomento option per indicare la diversa legenda
+ggtitle("standard deviation of PC1 by inferno color scale")
+
+#posso associare ogni plot ad un oggetto e poi plottarli insieme tramite la funzione grid.arrange
+grid.arrange(p1, p2, p3, nrow = 1) #argomento nrow per impostare il numero di righe
 
 
 
