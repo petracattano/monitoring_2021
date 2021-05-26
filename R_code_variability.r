@@ -84,12 +84,20 @@ pc1sd3 <-focal(pc1, w=matrix(1/25, nrow=5, ncol=5), fun=sd)
 cl <- colorRampPalette(c('blue','green','pink','magenta','orange','brown','red','yellow'))(100)
 plot(pc1sd3, col=cl)
 
-#funzione source per importare codici
+#funzione source per importare codici dall'esterno
 #calcolo della sd 7x7 tirando dentro il codice
 #lo script salvato deve avere gli stessi oggetti del codice in uso, altrimenti non funziona
 source("source_test_lezione.r")
 
 #richiamo le librerie necessarie per applicare nuovamente source ma con funzione ggplot
-source("source_ggplot.r")#non funziona
+source("source_ggplot.r")
+
+#non funziona e riprendiamo il codice sopra
+#funzione ggplot per aprire una nuova finestra vuota
+ggplot()
+
+
+
+
 
 
