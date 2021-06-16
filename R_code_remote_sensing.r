@@ -1,27 +1,31 @@
 # Il mio primo codice per il Telerilevamento
 
-# Codice per installazione pacchetti aggiuntivi raster
-install.packages("raster")
+# funzione per installazione pacchetti 
+# scrivo le virgolette perchè sto uscendo da R
+install.packages("raster") #pacchetto raster
 
 # Funzione library per richiamare il pacchetto raster 
+# scrivi sempre all'inizio del codice le librerie necessarie
 library(raster)
 
-# Indicare la cartella da cui estrarre i dati
+# settaggio della working directory, cartella da cui estrarre i dati
 setwd("C:/lab/") 
 
 # Funzione brick per importare i dati
-p224r63_2011 <- brick("p224r63_2011_masked.grd")
+#immagine Amazzonia
+p224r63_2011 <- brick("p224r63_2011_masked.grd") #virgolette perchè sto uscendo da R
 
-# Funzione per avere le info sul file
+# Funzione per avere le informazioni sul file (numero di pixel, sistema di riferimento...) scrivo il nome dell'immagine
 p224r63_2011
 
-# Funzione plot immagini per visualizzare le varie bande
-plot(p224r63_2011)
+# Funzione plot per visualizzare le varie bande
+plot(p224r63_2011) #colorazione di default
 
-# Per cambiare colore
-cl <- colorRampPalette(c("black","grey","light grey")) (100)
+# funzione per cambiare colore
+# scrivo la c davanti la parentesi perchè si tratta di elementi dello stesso tipo che sto raggruppando in un vettore, rappresentano lo stesso argomento (il colore)
+cl <- colorRampPalette(c("black","grey","light grey")) (100) #ultimo argomento indica quanti livelli di ciascun colore voglio visualizzare
 
-# Plot con la nuova color palette
+# Plot con la nuova color palette tramite l'argomento col
 plot(p224r63_2011, col=cl)
 
 # Per cambiare colore --> nuovo
@@ -29,26 +33,6 @@ cl <- colorRampPalette(c("blue","pink","light green","yellow","red")) (100)
 
 # Plot con la nuova color palette
 plot(p224r63_2011, col=cl)
-
-# DAY 3
-
-# Funzione library per richiamare il pacchetto raster 
-library(raster)
-
-# Indicare la cartella da cui estrarre i dati
-setwd("C:/lab/") 
-
-# Funzione brick per importare i dati
-p224r63_2011 <- brick("p224r63_2011_masked.grd")
-
-# Per cambiare colore --> nuovo
-cl <- colorRampPalette(c("blue","pink","light green","yellow","red")) (200)
-
-# Plot con la nuova color palette
-plot(p224r63_2011, col=cl)
-
-# Funzione per avere le info sul file
-p224r63_2011
 
 #Bande di Landsat
 # B1: blu
@@ -59,13 +43,13 @@ p224r63_2011
 # B6: infrarosso termico (lontano)
 # B7: infrarosso medio
 
-#per chiudere il plot
+#per chiudere il plot uso la funzione dev.off
 dev.off()
 
-# plotto l'immagine legata alla banda 1
+# plotto l'immagine legata alla banda 1, il $ (una corda) mi permette di legare al plot lo strato da visualizzare
 plot(p224r63_2011$B1_sre)
 
-# Per cambiare colore
+# cambio colore
 cl <- colorRampPalette(c("red","yellow","light green","pink","blue")) (200)
 
 # Plot con la nuova color palette in B1
@@ -74,12 +58,13 @@ cl <- colorRampPalette(c("red","yellow","light green","pink","blue")) (200)
 # ripulisci la parte grafica
 dev.off()
 
-# funzione par per stabilire come fare il plottaggio
-par(mfrow=c(1,2)) # nb se con il primo numero vuoi indicare le colonne e non le righe par(mfcol=c(2,1))
+# plotto B1 e B2 insieme
+# funzione par per stabilire come fare il plottaggio, mi permette di creare un sistema di righe e colonne in cui impostare un multiframe
+par(mfrow=c(1,2)) # avrò 1 riga e 2 colonne. Se con il primo numero vuoi indicare le colonne e non le righe --> par(mfcol=c(2,1)).
 plot(p224r63_2011$B1_sre)
 plot(p224r63_2011$B2_sre)
 
-# oppure # 2 row, 1 columns
+# se voglio 2 righe e 1 colonna
 par(mfrow=c(2,1))
 plot(p224r63_2011$B1_sre)
 plot(p224r63_2011$B2_sre)
@@ -98,7 +83,7 @@ plot(p224r63_2011$B2_sre)
 plot(p224r63_2011$B3_sre)
 plot(p224r63_2011$B4_sre)
 
-# color per le singole bande
+# Posso plottare le singole bande in un multiframe differenziandole nel colore
 par(mfrow=c(2,2))
 
 clb <- colorRampPalette(c("dark blue","blue","light blue")) (100)
@@ -111,52 +96,34 @@ clr <- colorRampPalette(c("dark red","red","pink")) (100)
 plot(p224r63_2011$B3_sre, col=clr) # banda rosso
 
 clnir <- colorRampPalette(c("yellow","orange","green")) (100)
-plot(p224r63_2011$B4_sre, col=clnir) # per l'infrarosso
+plot(p224r63_2011$B4_sre, col=clnir) # banda infrarosso vicino
 
 
-# DAI 4 --> PLOT RGB
+# DAY 4 
+#funzione plotRGB per visualizzare l'immagine con colori naturali, sistema RGB (red, green, blue sono i colori fondamentali)
+# monto le tre bande una sull’altra secondo un ordine che decido io (max. 3 bande)
+#l'argomento stretch per evitare che ci siano uno schiacciamento verso una sola parte del colore
+plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin") #banda 3 del rosso nella componente red, banda 2 del verde nella componente green, banda 1 del blue nella componente blu
 
-# Funzione library per richiamare il pacchetto raster 
-library(raster)
+#la natura vede in infrarosso
+# se voglio vedere anche l'infrarosso vicino (altissima riflettanza nelle piante, in questo caso sarà visibile in rosso perchè monto la banda 4 nella componente red)
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin") #banda 4 sulla componente red, banda 3 sulla componente green, banda 2 sulla componente blue
 
-# Indicare la cartella da cui estrarre i dati
-setwd("C:/lab/") 
+# monto la banda 4 dell'infrarosso vicino sul verde (altissima riflettanza nelle piante, in questo caso sarà visibile in verde perchè monto la banda 4 nella componente red)
+plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin") #banda 3 sulla componente red, banda 4 sulla componente green, banda 2 sulla componente blue
 
-# Funzione brick per importare i dati
-p224r63_2011 <- brick("p224r63_2011_masked.grd")
-
-
-#Bande di Landsat
-# B1: blu
-# B2: verde
-# B3: rosso
-# B4: infrarosso vicino
-# B5: infrarosso medio
-# B6: infrarosso termico (lontano)
-# B7: infrarosso medio
-
-#plot RGB per visualizzare immagine a colori "naturali"
-plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
-
-#Voglio vedere anche l'infrarosso vicino
-plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
-
-# monto la banda 4 dell'infrarosso vicino sul verde
-plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin")
-
-# monto la banda 4 nel blu 
+# monto la banda 4 dell'infrarosso vicino sul blue (altissima riflettanza nelle piante, in questo caso sarà visibile in blu perchè monto la banda 4 nella componente blue)
 plotRGB(p224r63_2011, r=3, g=2, b=4, stretch="Lin")
 
-
-# le visualizzo tutte e quattro grazie alla funzione par, 2x2 multiframe
+# confronto i 4 plot tramite la funzione par creando un multiframe 2x2 
 par(mfrow=c(2,2))
 plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
 plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin")
 plotRGB(p224r63_2011, r=3, g=2, b=4, stretch="Lin")
 
-# per salvare come pdf il multiframe --> funzione pdf
-pdf("ll_mio_primo_pdf_con_R.pdf") 
+# posso salvare i plot in PDF tramite la funzione pdf con questa sequenza di funzioni
+pdf("ll_mio_primo_pdf_con_R.pdf") #uso le virgolette perchè sto uscendo da R
 par(mfrow=c(2,2))
 plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
@@ -164,42 +131,36 @@ plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin")
 plotRGB(p224r63_2011, r=3, g=2, b=4, stretch="Lin")
 dev.off()
 
-# stretch histagram, più aggressivo, pendenza più potente
+# oltre a quello lineare, posso utilizzare lo stretch histagram, più aggressivo, mi permette di visualizzare + dettagli
+# le zone in violetto nella foresta probabilmente sono le più umide, presenza di acqua
 plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="hist")
 
 # par per immagine a colori naturali, immagine con infrarosso sul green, immagine con infrarosso sul green e his stretch. a 3 righe e 1 colonna.
 par(mfrow=c(3,1))
-plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
-plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin")
-plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="hist")
+plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin") #RGB
+plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin") #infrarosso sulla componente green con stretch lineare
+plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="hist") #infrarosso sulla componente green con stretch histogram 
 
 # DAY 5
- install.packages("RStoolbox") #installo nuovo pacchetto
+# importo sia l'immagine del 1988 che quella del 2011 per creare un multitemporal set e confrontare le due situazioni
+p224r63_2011 <- brick("p224r63_2011_masked.grd") # funzione brick per importare i dati
+p224r63_1988 <- brick("p224r63_1988_masked.grd") 
+p224r63_1988  #per avere le informazioni sui file
+p224r63_2011
 
-# importo il dato
-library(raster) #richiamo il pacchetto, non metto virgolette perchè è già su r
-setwd("C:/lab/") #indico la cartella
-
-#multitemporal set
-p224r63_2011 <- brick("p224r63_2011_masked.grd") # Funzione brick per importare i dati
-p224r63_1988 <- brick("p224r63_1988_masked.grd")
-p224r63_1988  #per avere le info
-
-# Plot, visualizzo tutte le bande
+# Plot per visualizzare tutte le bande della immagine del 1988
 plot(p224r63_1988)
 
-# Plot RGB 
-plotRGB(p224r63_1988, r=3, g=2, b=1, stretch="Lin")
+# Plot RGB colori naturali
+plotRGB(p224r63_1988, r=3, g=2, b=1, stretch="Lin") #RGB
+plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin") #vedo anche l'infrarosso vicino sulla componente red
 
-#Voglio vedere anche l'infrarosso vicino
-plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin")
-
-#Voglio plottare le due immagini in RGB per fare confronti, multiframe con par
+# funzione par per creare un multiframe RGB e confrontare le due situazioni
 par(mfrow=c(2,1))
 plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin")
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
 
-#Voglio un multiframe 2x2 visualizzando sia lo tretch lineare che histogram.
+#Voglio un multiframe 2x2 per visualizzare sia lo tretch lineare che histogram
 par(mfrow=c(2,2))
 plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin")
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
