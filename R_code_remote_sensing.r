@@ -1,5 +1,4 @@
 # Il mio primo codice per il Telerilevamento
-
 # funzione per installazione pacchetti 
 # scrivo le virgolette perchè sto uscendo da R
 install.packages("raster") #pacchetto raster
