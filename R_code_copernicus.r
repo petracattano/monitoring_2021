@@ -21,7 +21,12 @@ fcover # per avere info sul file
 cl <- colorRampPalette(c('light blue','green','red','yellow'))(100)
 plot(fcover, col=cl)
 
-# funzione aggregate per ricampionare il dataset e diminuirne la risoluzione
+# funzione aggregate per ricampionare (è un resampling) il dataset e diminuirne la risoluzione
 # permette di aggregare, attraverso la loro media, un tot di pixel in  pixel + grandi
-fcoverres<-aggregate(fcover, fact=50) #argomento fact indica di quanto diminuire linearmente. In questo caso in uno spazio 50x50 pixel ne avrò solo 1. 
+fcoverres<-aggregate(fcover, fact=100) #argomento fact indica di quanto diminuire linearmente. In questo caso in uno spazio 100x100 pixel ne avrò solo 1. 
+
+#plottaggio del dato ricampionato
+plot(fcoverres, col=cl)
+
+
 
