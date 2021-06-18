@@ -8,7 +8,9 @@
 
 # 5. R_code_classification.r
 
-# 6. 
+# 6. R_code_multivariate_analysis
+
+# 7. 
 
 
 
@@ -422,10 +424,10 @@ plot(soc20$map,col=cl)
 # importo tramite la funzione brick
 sun <- brick("Solar_Orbiter_s_first_view_of_the_Sun.png") # virgolette perchè sto uscendo da R
 
-#classifico tramite la funzione unsuperClass in 3 classi
+# classifico tramite la funzione unsuperClass in 3 classi
 sunc <- unsuperClass(sun, nClasses=3)
 
-#plot con $ per visualizzare la componente mappa dell'oggetto sun
+# plot con $ per visualizzare la componente mappa dell'oggetto sun
 plot(sunc$map)
 
 # Classificazione immagini Gran Canyon 
@@ -444,7 +446,7 @@ gc <- brick("dolansprings_oli_2013088_canyon_lrg.jpg") #virgolette perchè sto u
 # ho un raster con più strati, posso fare un plot RGB
 plotRGB(gc, r=1, g=2, b=3, stretch="lin")
 
-#posso anche cambiare lo streth da lin a hist, cambia la visualizzazione della gamma cromatica disponibile
+#  posso anche cambiare lo streth da lin a hist, cambia la visualizzazione della gamma cromatica disponibile
 plotRGB(gc, r=1, g=2, b=3, stretch="hist") 
 
 # per creare una classificazione uso la funzione unsuperClass
@@ -458,7 +460,60 @@ gcc4 <- unsuperClass(gc, nClasses=4) # per capire se il numero di classi scelto 
 plot(gcc4$map) # $ per visualizzare solo la mappa dell'oggetto
 
 
-# 6. 
+# 6. R_code_multivariate_analysis
+
+#23/04/2021 Analisi multivariata
+
+#pacchetti necessari
+library (raster)
+library(RStoolbox)
+
+#imposto la working directory
+setwd("C:/lab/")
+
+# carico l'immagine p224r63_2011.grd 
+# ho 7 bande disponibili, uso la funzione brick perchè ho un set multiplo di dati (la funzione raster carica 1 set per volta)
+p224r63_2011 <- brick("p224r63_2011.grd")
+
+#plot della immagine
+plot(p224r63_2011) #visualizzerò tante immagini
+
+# se voglio le informazioni sull'immagine
+p224r63_2011
+
+# faccio un plot della banda 1 contro la banda 2 per visualizzare la correlazione tra due bande
+# potrebbe dare messaggi di warning perchè stiamo plottando solo il 2% circa dei dati
+plot(p224r63_2011$B1_sre,p224r63_2011$B2_sre, col="red", pch=19, cex=2) # pch=point simbolo; cex=dimensione del simbolo;
+
+# posso invertire il posizionamento delle due bande e quindi l'impostazione del plot
+plot(p224r63_2011$B2_sre,p224r63_2011$B1_sre, col="red", pch=19, cex=2)
+
+# invece di fare manualmente la correlazione tra bande, posso usare la funzione pairs che mi permette di fare la correlazione a due a due di tutte le bande 
+# la funzione pairs indica anche il coefficiente di correlazione (indice di pearson; -1= corr. neg.; +1= corr. pos.), il grado di correlazione viene evidenziato anche dalle dimensioni del carattere
+pairs(p224r63_2011)
+
+# funzione aggregate per diminuire la dimensione dell'immagine aggregando i pixel --> ricampionamento
+# decidere sia la funzione (es. media) che il fattore di riduzione (es. 10)
+p224r63_2011res <- aggregate(p224r63_2011, fact=10) # ogni 10x10 pixel ne avrò 1
+
+# per visualizzare la nuova immagine posso sfruttare la funzione par per visualizzare entrambe le immagini a diverse risoluzioni
+par(mfrow=c(2,1))
+plotRGB(p224r63_2011, 1, 2, 3, stretch="Lin") # plot RGB
+plotRGB(p224r63_2011res, 1, 2, 3, stretch="Lin")
+
+# la funzione rasterPCA permette di identificare la PCA passando da una variabilità maggiore ad una minore, che sia però rappresentativa. 
+# prende il pacchetto e lo compatta in un minor numero di bande
+# la PC1 è una banda che riassume tutte e 7 le bande originali, è quella che riassume meglio il modello
+p224r63_2011res_pca <- rasterPCA(p224r63_2011res)
+
+#funzione summary per capire la rappresentatività delle singole componenti
+summary(p224r63_2011res_pca$model)
+
+#plot RGB per visualizzare l'immagine con le nuove bande
+plotRGB(p224r63_2011res_pca$map, r=1, g=2, b=3, stretch="Lin")
+
+
+# 7. 
 
 
 
