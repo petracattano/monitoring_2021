@@ -5,7 +5,7 @@ library(RStoolbox)
 library(ggplot2)# per plottare ggplot
 library(gridExtra)# per plottare insieme più ggplot
 install.packages("viridis")# virgolette perchè esco da R
-library(viridis)# per colorare i plot di ggplot automaticamente
+library(viridis)# per colorare i plot di ggplot automaticamente 
 
 #set della working directory dove ho salvato i dati
 setwd("C:/lab")
