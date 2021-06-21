@@ -1,29 +1,32 @@
-#carico le librerie necessarie
+# calcolo dell'eterogeneità del paesaggio su dati Sentinel ghiacciaio Similaun (> eterogeneità = > biodiversità attesa)
+# carico le librerie necessarie
 library(raster)
 library(RStoolbox)
-library(ggplot2)#per plottare ggplot
-library(gridExtra)#per plottare insieme più ggplot
-install.packages("viridis")
-library(viridis)#per colorare i plot di ggplot automaticamente
+library(ggplot2)# per plottare ggplot
+library(gridExtra)# per plottare insieme più ggplot
+install.packages("viridis")# virgolette perchè esco da R
+library(viridis)# per colorare i plot di ggplot automaticamente
 
-#set della working directory
+#set della working directory dove ho salvato i dati
 setwd("C:/lab")
 
-#importo l'immagine del ghiacciaio Similaun, utilizzo la funzione brick e non quella raster perchè l'immagine è formata da 3 bande 
-sent <- brick("sentinel.png")
+# importo l'immagine del ghiacciaio Similaun (dati sentinel, ESA, 10m)
+sent <- brick("sentinel.png")# funzione brick e perchè l'immagine è composta da + livelli (raster importerebbe solo 1 livello) 
 
 # band1: NIR
 # band2: red
 # band3: green
-#r=1 (NIR sulla componente red), g=2 (il RED sulla componente verde), b=3 (il GREEN sulla componente blu), nel plot RGB
+#r=1 (il NIR sulla componente rossa), g=2 (il RED sulla componente verde), b=3 (il GREEN sulla componente blu) nel plot RGB
 
 #plot dell'immagine, per plottarla con tre livelli RGB utilizziamo la funzione plotRGB
-plotRGB(sent, r=1, g=2, b=3, stretch="lin") #è lo schema di default, puoi anche scrivere semplicemente plotRGB(sent)
+plotRGB(sent, r=1, g=2, b=3, stretch="lin") # è lo schema di default, puoi anche scrivere semplicemente plotRGB(sent)
 
 #cambiamo la posizione del NIR
-plotRGB(sent, r=2, g=1, b=3, stretch="lin")
+plotRGB(sent, r=2, g=1, b=3, stretch="lin") # l'acqua risulta nera perchè assorbe tutto il NIR
 
-#per utilizzare la tecnica mooving window ho bisogno di compattare il set in un solo strato
+
+
+# per utilizzare la tecnica mooving window ho bisogno di compattare il set in un solo strato
 #posso farlo tramite l'NDVI ottenendo un layer sul quale calcolare la deviazione standard
 #Per trovare il nome delle bande
 sent
