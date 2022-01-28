@@ -1,0 +1,194 @@
+# prima fase visualizza il problema
+# richiama le librerie
+library(raster)
+
+# set della working directory
+setwd("C:/lab/hobet21")
+
+# funzione brick per importare i dati
+hobet1984 <- brick("hobet_19840917_lrg.jpg")
+hobet1988 <- brick("hobet_19880827_lrg.jpg")
+hobet1992 <- brick("hobet_19920806_lrg.jpg")
+hobet1996 <- brick("hobet_19961004_lrg.jpg")
+hobet2000 <- brick("hobet_20001015_lrg.jpg")
+hobet2004 <- brick("hobet_20040706_lrg.jpg")
+hobet2008 <- brick("hobet_20080818_lrg.jpg")
+hobet2012 <- brick("hobet_20120920_lrg.jpg")
+
+
+#plot RGB per evidenziare i cambiamenti
+#significa che ho le bande r g e b????
+par(mfrow=c(2,2))
+plotRGB(hobet1984, stretch="Lin")#margins =TRUE
+plotRGB(hobet1992, stretch="Lin")# tretch anche hist
+plotRGB(hobet2004, stretch="Lin")
+plotRGB(hobet2012, stretch="Lin")
+
+#meglio con hist?
+#+ contrastato
+par(mfrow=c(2,2))
+plotRGB(hobet1984, stretch="Hist")#margins =TRUE
+plotRGB(hobet1992, stretch="Hist")# tretch anche hist
+plotRGB(hobet2004, stretch="Hist")
+plotRGB(hobet2012, stretch="Hist")
+
+
+
+
+#la banda verde per studiare la vegetazione??? 
+# problema, la riflettanza sembra aumentare!!! e' davvero la banda verde? forse è la rossa? se è la rossa quadra
+# la formattazione non mi piace
+par(mfrow=c(4,4))
+#cl <- colorRampPalette(c("red","yellow", "blue")) (100)
+cl <- colorRampPalette(c("blue","light green","pink","red"))(100)
+plot(hobet1984$hobet_19840917_lrg.2, col = cl, main = "1984")#margins =TRUE
+plot(hobet1992$hobet_19920806_lrg.2, col = cl, main = "1992")# tretch anche hist
+plot(hobet2004$hobet_20040706_lrg.2, col = cl, main = "2004")
+plot(hobet2008$hobet_20080818_lrg.2, col = cl, main = "2008")
+
+
+#provo con la banda 1
+par(mfrow=c(2,2))
+#cl <- colorRampPalette(c("red","yellow", "blue")) (100)
+cl <- colorRampPalette(c("blue","light green","pink","red"))(100)
+plot(hobet1984$hobet_19840917_lrg.1, col = cl)#margins =TRUE
+plot(hobet1992$hobet_19920806_lrg.1, col = cl)# tretch anche hist
+plot(hobet2004$hobet_20040706_lrg.1, col = cl)
+plot(hobet2008$hobet_20080818_lrg.1, col = cl)
+
+# provo con la 3
+par(mfrow=c(2,2))
+#cl <- colorRampPalette(c("red","yellow", "blue")) (100)
+cl <- colorRampPalette(c("blue","light green","pink","red"))(100)
+plot(hobet1984$hobet_19840917_lrg.3, col = cl)#margins =TRUE
+plot(hobet1992$hobet_19920806_lrg.3, col = cl)# tretch anche hist
+plot(hobet2004$hobet_20040706_lrg.3, col = cl)
+plot(hobet2008$hobet_20080818_lrg.3, col = cl)
+
+#1984 tutte e tre le bande
+par(mfrow=c(2,2))
+plot(hobet1984$hobet_19840917_lrg.1, col = cl)
+plot(hobet1984$hobet_19840917_lrg.2, col = cl)
+plot(hobet1984$hobet_19840917_lrg.3, col = cl)
+# non capisco quale è il verde
+
+
+# seconda fase time_series
+library(rasterVis)
+library(raster)
+setwd("C:/lab/hobet21")
+
+# funzione levelplot a tutti i file
+#devo creare una lista
+rlist <- list.files(pattern="lrg")
+rlist
+import <- lapply(rlist,raster) # importo tutto con raster
+import
+TGr <- stack(import)
+TGr
+plot(TGr)
+
+# così vorrei vedere come si comporta la riflettanza fino al 2012
+cl <- colorRampPalette(c("blue","light green","pink","red"))(100)
+levelplot(TGr, col.regions=cl, main="Growth of Mountaintop Mine, West Virginia, 1984-2012", names.attr=c("1984", "1988", "1992", "1996", "2000", "2004", "2008", "2012"))
+
+
+
+# classificazione di immagini in funzione della somiglianza dei pixel
+# LAND COVER
+library(raster)
+library(RStoolbox) # per la classificazione tramite funzione unsuperClass
+library(ggplot2)
+install.packages("gridExtra")
+library(gridExtra)
+
+
+setwd("C:/lab/hobet21")
+hobet1984 <- brick("hobet_19840917_lrg.jpg")
+hobet1992 <- brick("hobet_19920806_lrg.jpg")
+hobet1996 <- brick("hobet_19961004_lrg.jpg")
+hobet2000 <- brick("hobet_20001015_lrg.jpg")
+hobet2004 <- brick("hobet_20040706_lrg.jpg")
+hobet2012 <- brick("hobet_20120920_lrg.jpg")
+
+hobet1984class <- unsuperClass(hobet1984, nClasses=3)
+hobet1992class <- unsuperClass(hobet1992, nClasses=3)
+hobet1996class <- unsuperClass(hobet1996, nClasses=3)
+hobet2000class <- unsuperClass(hobet2000, nClasses=3)
+hobet2004class <- unsuperClass(hobet2004, nClasses=3)
+hobet2008class <- unsuperClass(hobet2008, nClasses=3)
+hobet2012class <- unsuperClass(hobet2012, nClasses=3)
+# 3 classi: vetetazione, fiumi, cava
+
+
+
+
+# vuoi confrontare come cambiano le classi nel tempo
+cl <- colorRampPalette(c("blue","light green","red","orange"))(100)
+par(mfrow=c(6,2))
+plot(hobet1984class$map, col = cl)
+plot(hobet1992class$map, col = cl)
+plot(hobet1996class$map, col = cl)
+plot(hobet2000class$map, col = cl)
+plot(hobet2004class$map, col = cl)
+plot(hobet2012class$map, col = cl)
+# MI SERVE UN MODO X METTERLE INSIEME SENZA SBALLARE I COLORI?????
+
+
+# SE USI QUESTE DUE PUOI LAVORARE SU 2 CLASSI
+hobet2008class <- unsuperClass(hobet2008, nClasses=2)
+hobet1984class <- unsuperClass(hobet1984, nClasses=2)
+
+
+# posso capire i rapporti tra le classi individuate tramite la funzione freq che mi dice la frequenza delle diverse classi nella prima immagine
+#1984
+plot(hobet1984class$map)
+freq(hobet1984class$map)
+
+#    value   count
+#[1,]     1 1285744 vegetazione
+#[2,]     2   96656 cava + corsi acqua
+
+
+s1 <-1285744+96656
+s1 #per vedere la somma: [1] 1382400
+
+# posso calcolare la proporzione (valore classe1/totale) e (valore classe2/totale)
+freq(hobet1984class$map)/s1
+#        value      count
+#[1,] 7.233796e-07 0.93008102 la vegetazione è il 93%
+#[2,] 1.446759e-06 0.06991898 il resto è il 6%
+
+
+#2008
+plot(hobet2008class$map)
+freq(hobet1984class$map)
+#     value   count
+#[1,]     1 1285744 è la vegetazione
+#[2,]     2   96656 cava + corsi d'acqua
+freq(hobet2008class$map)/s1
+#7.233796e-07 0.9345855
+#[2,] 1.446759e-06 0.0654145
+# COME MINCHIA è POSSIBILE CHE AUMENTA LA VEGETZIONE IN CLASSE 1?!?!?!? se c'è + cava
+
+# SE TI RIESCE FAI GGPLOT CON LE PERCENTUALIIII
+
+
+# STUDIO SU ETEROGENEITà DEL PAESAGGIO
+library(raster)
+library(RStoolbox)
+library(ggplot2)# per plottare ggplot
+library(gridExtra)# per plottare insieme più ggplot
+install.packages("viridis")# virgolette perchè esco da R
+library(viridis)# per colorare i plot di ggplot automaticamente 
+
+
+# per calcolare l'eterogeneità posso sfruttare la deviazione standard (variabilità che include il 68% di tutte le osservazioni)
+
+
+
+
+
+
+
+
