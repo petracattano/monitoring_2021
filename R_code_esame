@@ -17,7 +17,7 @@ hobet2004 <- brick("hobet_20040706_lrg.jpg")
 hobet2008 <- brick("hobet_20080818_lrg.jpg")
 
 
-#plot RGB con stretch "hist" per evidenziare i cambiamenti (1984-2008)
+#multipanel RGB con stretch "hist" per evidenziare i cambiamenti (1984-2008)
 par(mfrow=c(2,3))
 plotRGB(hobet1984, stretch="Hist")
 plotRGB(hobet1988, stretch="Hist")
@@ -29,11 +29,9 @@ mtext("Growth of Mountaintop Mine, West Virginia, 1984-2008", side = 3, line = -
 
 
 
-#BANDA ROSSA E CAMBIAMENTI RIFLETTANZA
-# nel plot si vede come in prossimità della cava la riflettanza della banda rossa aumenti
-# rimane bassa nella vegetazione, è tutta blu
-
-# multipannel solo della banda red per evidenziare i cambiamenti nella riflettanza in funzione della perdita di vegetazione
+# la banda red ha bassa riflettanza nella vegetazione
+# la rilettanza aumenta \\ alla diminuzione della vegetazione
+# multipanel solo della banda red 
 cl <- brewer.pal(8, "Spectral")
 par(mfrow=c(2,3), mar=c(2.5,2.5,2.5,2.5))
 plot(hobet1984$hobet_19840917_lrg.1, col = cl, main = "1984")
@@ -59,7 +57,7 @@ hobet2008class <- unsuperClass(hobet2008, nClasses=3)
 
 # 3 classi: vetetazione, fiumi, cava
 
-# multipannel per evidenziare i cambiamenti delle tre classi nel tempo
+# multipanel per evidenziare i cambiamenti delle tre classi nel tempo
 # TITOLO
 cols3 <- brewer.pal(3, "Set3") # 3 livelli per la color, corrispondenti ai tre livelli
 par(mfrow=c(2,3), mar=c(2.5,2.5,2.5,2.5))
@@ -120,7 +118,6 @@ freq(hobet2008class$map)
 s1 <-43056+1202623+136721 # è l'area totale
 s1
 # [1] 1382400
-
 
 # calcolo la % della classe cava per ogni immagine
 
