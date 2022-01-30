@@ -1,21 +1,9 @@
-# prima fase visualizza il problema
-# contesto
-# luogo con immagini colori naturali
-# lavora sulla riflettanza che cambia nel tempo per evidenziare le ferite lasciate sulla roccia
-# richiama le librerie (tutte quelle che mi servono)
-library(raster)
-library(rasterVis)
+# richiamo tutte le librerie necessarie
+library(raster) 
 library(RStoolbox) # per la classificazione tramite funzione unsuperClass
-library(ggplot2)
-library(gridExtra)
-library(viridis) 
-library(RColorBrewer) # colorazioni particolari
-
-#alcune color carine
-#cols <- brewer.pal(3, "BuGn")
-#cols2<- brewer.pal(3, "YlGn")
-#cols3 <- brewer.pal(5, "Set3")
-#cols4 <- brewer.pal(5, "")
+library(ggplot2) # per creare grafici tramite funzione ggplot
+library(gridExtra) # per plottare insieme più ggplot
+library(RColorBrewer) # per creare colorazioni particolari
 
 # set della working directory
 setwd("C:/lab/hobet21")
@@ -29,46 +17,23 @@ hobet2004 <- brick("hobet_20040706_lrg.jpg")
 hobet2008 <- brick("hobet_20080818_lrg.jpg")
 
 
-#plot RGB per evidenziare i cambiamenti 1984-2008
-
+#plot RGB con stretch "hist" per evidenziare i cambiamenti (1984-2008)
 par(mfrow=c(2,3))
-plotRGB(hobet1984, stretch="Hist")#margins =TRUE
+plotRGB(hobet1984, stretch="Hist")
 plotRGB(hobet1988, stretch="Hist")
-plotRGB(hobet1992, stretch="Hist")# tretch anche hist
+plotRGB(hobet1992, stretch="Hist")
 plotRGB(hobet2000, stretch="Hist")
 plotRGB(hobet2004, stretch="Hist")
 plotRGB(hobet2008, stretch="Hist")
 mtext("Growth of Mountaintop Mine, West Virginia, 1984-2008", side = 3, line = -1.5, outer = TRUE)
-
-# così forse la formattazione è + carina, MA ANCHE NO, INCASINATA
-#p1 <- ggRGB(hobet1984, stretch="Hist") # associamo il plot ad un oggetto (es. p1) così da gestire meglio la creazione del multipannel con grid.arrange
-#p2 <- ggRGB(hobet1988, stretch="Hist")
-#p3 <- ggRGB(hobet1992, stretch="Hist")
-#p4 <- ggRGB(hobet2000, stretch="Hist")
-#p5 <- ggRGB(hobet2004, stretch="Hist")
-#p6 <- ggRGB(hobet2008, stretch="Hist")
-#grid.arrange(p1, p2, p3, p4, p5, p6, nrow=3, top = "Growth of Mountaintop Mine, West Virginia, 1984-2008") 
-
-
-
-#hobet1984 # nomi delle bande
-
-# così ho la conferma che la banda 1 è quella del rosso
-#par(mfrow=c(2,2))
-#plotRGB(hobet1984)
-#plotRGB(hobet1984, r = 1) # dovrebbe essere la rossa perchè così corrisponde allRGB di default
-#plotRGB(hobet1984, g = 1)
-#plotRGB(hobet1984, b = 1)
-# la bada del rosso ha bassa riflettanza nella vegetazione
-#cl <- colorRampPalette(c("blue","light green","pink","red"))(100)
-#plot(hobet1984$hobet_19840917_lrg.1, col = cl)
 
 
 
 #BANDA ROSSA E CAMBIAMENTI RIFLETTANZA
 # nel plot si vede come in prossimità della cava la riflettanza della banda rossa aumenti
 # rimane bassa nella vegetazione, è tutta blu
-#cl <- colorRampPalette(c("blue","light green","pink","red"))(100)
+
+# multipannel solo della banda red per evidenziare i cambiamenti nella riflettanza in funzione della perdita di vegetazione
 cl <- brewer.pal(8, "Spectral")
 par(mfrow=c(2,3), mar=c(2.5,2.5,2.5,2.5))
 plot(hobet1984$hobet_19840917_lrg.1, col = cl, main = "1984")
@@ -82,28 +47,9 @@ dev.off()
 
 
 
-# seconda fase time_series --> TI SERVE??? non credo, meglio concentrarti sulla banda rossa
-# funzione levelplot a tutti i file
-#devo creare una lista
-rlist <- list.files(pattern="lrg")
-rlist
-import <- lapply(rlist,raster) # importo tutto con raster
-import
-TGr <- stack(import)
-TGr
 
-# così vorrei vedere come si comporta la riflettanza fino al 2012
-cl <- colorRampPalette(c("blue","light green","pink","red"))(100)
-levelplot(TGr, col.regions=cl, main="Growth of Mountaintop Mine, West Virginia, 1984-2008", names.attr=c("1984", "1988", "1992", "2000", "2004", "2008"))
-# voglio vedere solo la banda 1 ma non riesco, cosa posso dedurre da questi grafici??
-
-
-
-
-# STUDIO LAND COVER
-# classificazione di immagini in funzione della somiglianza dei pixel
-# lavoro su queste quattro immagini
-
+# Studio della Land Cover
+# classifico le immagini tramite la funzione unsuperClass del pacchetto RStoolbox
 hobet1984class <- unsuperClass(hobet1984, nClasses=3)
 hobet1988class <- unsuperClass(hobet1988, nClasses=3)
 hobet1992class <- unsuperClass(hobet1992, nClasses=3)
@@ -113,79 +59,61 @@ hobet2008class <- unsuperClass(hobet2008, nClasses=3)
 
 # 3 classi: vetetazione, fiumi, cava
 
-
-# vuoi confrontare come cambiano le classi nel tempo
-#cols3 <- brewer.pal(3, "Set3")
-#cols3
-#1 = "#8DD3C7" 
-# 2 = "#FFFFB3" 
-# 3 = "#BEBADA"
-cl123 <- colorRampPalette(c("#8DD3C7","#FFFFB3","#BEBADA"))(100)
-cl132 <- colorRampPalette(c("#8DD3C7","#BEBADA","#FFFFB3"))(100)
-cl213 <- colorRampPalette(c("#FFFFB3","#8DD3C7","#BEBADA"))(100)
-cl231 <- colorRampPalette(c("#FFFFB3","#BEBADA","#8DD3C7"))(100)
-cl312 <- colorRampPalette(c("#BEBADA","#8DD3C7","#FFFFB3"))(100)
-cl321 <- colorRampPalette(c("#BEBADA","#FFFFB3","#8DD3C7"))(100)
-dev.off()
-
-
-# par 2x2 per evidenziare i 3 livelli nel tempo
+# multipannel per evidenziare i cambiamenti delle tre classi nel tempo
+# TITOLO
+cols3 <- brewer.pal(3, "Set3") # 3 livelli per la color, corrispondenti ai tre livelli
 par(mfrow=c(2,3), mar=c(2.5,2.5,2.5,2.5))
-plot(hobet1984class$map, col = cl123, main = "1984")
-plot(hobet1988class$map, col = cl213, main = "1988")
-plot(hobet1992class$map, col = cl213, main = "1992")
-plot(hobet2000class$map, col = cl312, main = "2000")
-plot(hobet2004class$map, col = cl312, main = "2004")
-plot(hobet2008class$map, col = cl321, main = "2008")
+plot(hobet1984class$map, col = cols3, main = "1984")
+plot(hobet1988class$map, col = cols3, main = "1988")
+plot(hobet1992class$map, col = cols3, main = "1992")
+plot(hobet2000class$map, col = cols3, main = "2000")
+plot(hobet2004class$map, col = cols3, main = "2004")
+plot(hobet2008class$map, col = cols3, main = "2008")
+
 
 dev.off()
-# devi capire le percentuali
 # viola = la cava
 # il resto = vegetazione + fiumi
-# concentrati sull'evoluzione del livello cava sul totale
+# mi interessa l'evoluzione della classe cava sul totale
+# calcolo le proporzioni
 
 freq(hobet1984class$map)
-
 #       value  count
 #[1,]     1 440270
 #[2,]     2 876606
 #[3,]     3  65524 è la cava
 
 freq(hobet1988class$map)
-
-#            value  count
+#        value  count
 #[1,]     1 706008
 #[2,]     2 605799
 #[3,]     3  70593 è la cava
 
 freq(hobet1992class$map)
-
-#value   count
+#      value   count
 #[1,]     1 1233553
 #[2,]     2  127354
 #[3,]     3   21493 è la cava
 
 freq(hobet2000class$map)
-
-#value  count
+#       value  count
 #[1,]     1  56106 è la cava
 #[2,]     2 650393
 #[3,]     3 675901
 
 
 freq(hobet2004class$map)
-#      value   count
+#       value   count
 #[1,]     1   35230 è la cava
 #[2,]     2  126081
 #[3,]     3 1221089
 
 
 freq(hobet2008class$map)
-#  value   count
+#       value   count
 #[1,]     1   43056 è la cava
 #[2,]     2 1202623
 #[3,]     3  136721
-
 
 
 # trovo il totale per le proporzioni
@@ -194,73 +122,47 @@ s1
 # [1] 1382400
 
 
+# calcolo la % della classe cava per ogni immagine
 
-# vedi le % di cava per ogni immagine
 freq(hobet1984class$map)/s1
-
-#value      count
+#        value      count
 #[1,] 7.233796e-07 0.31848235
 #[2,] 1.446759e-06 0.63411892
 #[3,] 2.170139e-06 0.04739873 4,7% di cava
 
 
 freq(hobet1988class$map)/s1
-
-#value      count
+#       value      count
 #[1,] 7.233796e-07 0.51071181
 #[2,] 1.446759e-06 0.43822266
 #[3,] 2.170139e-06 0.05106554 5,1% di cava
 
 freq(hobet1992class$map)/s1
-
-#value      count
+#         value      count
 #[1,] 7.233796e-07 0.89232711
 #[2,] 1.446759e-06 0.09212529
 #[3,] 2.170139e-06 0.01554760 1,6% di cava
  
 
 freq(hobet2000class$map)/s1
-
-#value      count
+#         value      count
 #[1,] 7.233796e-07 0.04058594 4,1% di cava
 #[2,] 1.446759e-06 0.47048105
 #[3,] 2.170139e-06 0.48893302
 
 freq(hobet2004class$map)/s1
-
-#value      count
+#       value      count
 #[1,] 7.233796e-07 0.02548466 2,5% di cava
 #[2,] 1.446759e-06 0.09120443
 #[3,] 2.170139e-06 0.88331091
 
 freq(hobet2008class$map)/s1
-#value      count
+#       value      count
 #[1,] 7.233796e-07 0.03114583 3,1% di cava
 #[2,] 1.446759e-06 0.86995298
 #[3,] 2.170139e-06 0.09890119
 
-
-
-# TROVA UN MODO PER RAPPRESENTARE CHIARAMENTE
-# a questo punto voglio impostare i valori in un dataframe su R
-# creo una tabella e delineo prima l'impostazione delle colonne
-
-cover <- c("Mines","Other") # HA SENSO FARLO ANNO X ANNO? 
-percent_1984 <- c(4.5, 95.5)
-percent_1988 <- c(5.1, 94.9)
-percent_2004 <- c(2.3, 97.7)
-percent_2008 <- c(3.1, 96.9)
-
-#data.frame funzione per creare dataframe mettendo insieme le colonne create
-#percentages<-data.frame(cover,percent_1984,percent_1988,percent_2004,percent_2008)
-#percentages
-
-#cover percent_1984 percent_1988 percent_2004 percent_2008
-#1 Mines          4.5          5.1          2.3          3.1
-#2 Other         95.5         94.9         97.7         96.9
-
-
-# così mi pare + chiaro
+# imposto i valori su un dataframe tramite la funzione data.frame
 Year <- c("1984", "1988","1992", "2000", "2004", "2008")
 percent_of_mine <- c(4.7, 5.1, 1.6, 4.1, 2.5, 3.1)
 percent_of_other <- c(95.3, 94.9, 98.4, 95.9, 97.5, 96.9)
@@ -273,19 +175,13 @@ percentages
 #3 2004             2.3             97.7
 #4 2008             3.1             96.9
 
-# a questo punto elaboriamo il grafico con ggplot2, plottiamo il dataframe
-# indico il dataset: percentages
-# argomento aes: mappatura delle variabili. Nel plot la x sarà il tipo di cover, la y la percentuale nel 1992
-# argomento geom_bar per indicare la geometria di visualizzazione
-ggplot(percentages, aes(x=Year, y=percent_of_mine, color=percent_of_mine)) + geom_bar(stat="identity", fill="white") # in fill indica il colore di riempimento del grafico 
-# NON MI PIACE in bluuuu
-
-# se vuoi le linee
+# elaborazione grafica tramite ggplot
+# geom_ line
 mine <- ggplot(percentages, aes(x=Year, y=percent_of_mine, group = 1)) + geom_line(color = "red")
 other <- ggplot(percentages, aes(x=Year, y=percent_of_other, group = 1)) + geom_line(color = "black")
-grid.arrange(mine, other, nrow = 2) # con nrow = 2 è + carino
+grid.arrange(mine, other, nrow = 2) # plotto insieme i due grafici
 
-# altri esempi, cos' hai sempre bar ma è pieno, FORSE COSì è MEGLIO MA COME CAMBIO IL COLORE?
+# geom_bar
 ggplot(percentages, aes(x = Year, y =percent_of_mine, fill = percent_of_mine)) + geom_bar(stat = "identity") + theme_minimal() + ggtitle("Andamento della classe relativa all'area di estrazione (1984 - 2008)")
 
 
